@@ -88,6 +88,7 @@
     #inimigo{width: 150px;height: 150px;position: absolute;left: 700px;top: 254px;background-image: url(imgs/NER.gif);background-size: cover;}
     #carro{width: 150px;height: 110px;position: absolute;left: 1px;bottom: 20px;background: url(imgs/CER.gif);background-size: cover;}
     #explosao{width: 200px;height: 200px;position: absolute;background-image: url(https://www.herculeanpixel.com/images/news/ppb_shock.gif);background-size: cover;}
+    #explosaoG{width: 200px;height: 200px;position: absolute;background-image: url(https://i.pinimg.com/originals/76/8d/41/768d41c38389731667cf6972ae5bdd1c.gif);background-size: cover;}
 </style>
 <body>
     <div class="conteudo">
@@ -207,19 +208,19 @@
                         explosao(iniX,iniY);var pssY = parseInt(Math.random()*334);energia--;
                         $('#inimigo').css('left',700);$('#inimigo').css('top',pssY);
                     }
-                    if(coliC.length>0){
-                        carX = parseInt($('#carro').css('left'));carY = parseInt($('#carro').css('top'));
-                        explosao(carX,carY);$('#carro').remove();ReporCarro();energia--;
-                    }
                     if(coliTN.length>0){
                         iniXT = parseInt($('#inimigo').css('left'));iniYT = parseInt($('#inimigo').css('top'));
                         explosao(iniXT,iniYT);var pssY = parseInt(Math.random()*334);$('#tiro').css('left',950);
                         $('#inimigo').css('left',700);$('#inimigo').css('top',pssY);naves = naves+1;vl = vl+0.2;
                     }
+                    if(coliC.length>0){
+                        carX = parseInt($('#carro').css('left'));carY = parseInt($('#carro').css('top'));
+                        explosaoG(carX,carY);$('#carro').remove();ReporCarro();energia--;
+                    }
                     if(coliTC.length>0){
                         cami = cami+1;vl = vl+0.4;
                         carXT = parseInt($('#carro').css('left'));carYT = parseInt($('#carro').css('top'));
-                        explosao(carXT,carYT);$('#carro').remove();ReporCarro();$('#tiro').css('left',950);
+                        explosaoG(carXT,carYT);$('#carro').remove();ReporCarro();$('#tiro').css('left',950);
                     }
                     if(coliCT.length>0){
                         jogX = parseInt($('#jogador').css('left'));jogY = parseInt($('#jogador').css('top'));
@@ -237,9 +238,17 @@
                         }
                 }
             function explosao(x,y){
+                $('#explosaoG').remove()
                 $('.fundo').append("<div id='explosao'></div>");
                 var div = $('#explosao');div.css('left',x);div.css('top',y);div.animate({width:200,opacity:0},'slow');
-                var Texplosao = window.setInterval(Rexplosao,100);
+                var Texplosao = window.setInterval(Rexplosao,500);
+                function Rexplosao(){div.remove();window.clearInterval(Texplosao);Texplosao = null;}
+            }
+            function explosaoG(x2,y2){
+                $('#explosaoG').remove()
+                $('.fundo').append("<div id='explosaoG'></div>");somExplosao.play()
+                var div = $('#explosaoG');div.css('left',x2);div.css('top',y2);div.animate({width:200,opacity:0},'slow');
+                var Texplosao = window.setInterval(Rexplosao,500);
                 function Rexplosao(){div.remove();window.clearInterval(Texplosao);Texplosao = null;}
             }
             function Barraenergia(){
@@ -250,7 +259,7 @@
             }
             function gameover(){
                 fim = true;Musica.pause();somGameover.play();window.clearInterval(jogo.timer);jogo.timer=null;
-                $('#jogador').remove();$('#inimigo').remove();$('#carro').remove();$('#amigo').remove();
+                $('#jogador').remove();$('#inimigo').remove();$('#carro').remove();$('#amigo').remove();$('#explosaoG').remove();$('#explosao').remove()
                 $('.fundo').append("<div id='fim'></div>");
                 $('#fim').html("<h1>Fim de jogo</h1><p>Sua pontuação total foi:"+naves*3+cami*10+salvos*15+"</p>"+"<a id='reinicia' onclick='restart()'>Jogar de Novo?</a>");
             }
